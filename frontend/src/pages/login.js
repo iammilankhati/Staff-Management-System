@@ -1,9 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { login_validate } from '../lib/validate';
+import { login } from '../services/apiServices';
+import { Store } from 'react-notifications-component';
 
 const Login = () => {
+	const navigate = useNavigate();
 	const formik = useFormik({
 		initialValues: {
 			email: '',
@@ -13,7 +16,45 @@ const Login = () => {
 		onSubmit,
 	});
 	async function onSubmit(values) {
-		console.log(values);
+		const formData = {
+			email: values.email,
+			password: values.password,
+		};
+
+		login(formData)
+			.then((res) => {
+				console.log(res);
+				Store.addNotification({
+					title: 'Success!',
+					message: res.message,
+					type: 'success',
+					insert: 'top',
+					container: 'top-right',
+					animationIn: ['animate__animated', 'animate__fadeIn'],
+					animationOut: ['animate__animated', 'animate__fadeOut'],
+					dismiss: {
+						duration: 3000,
+						onScreen: true,
+					},
+				});
+				navigate('/home');
+			})
+			.catch((error) => {
+				console.log(error);
+				Store.addNotification({
+					title: 'Failure!',
+					message: 'Please enter the valid credentials',
+					type: 'danger',
+					insert: 'top',
+					container: 'top-right',
+					animationIn: ['animate__animated', 'animate__fadeIn'],
+					animationOut: ['animate__animated', 'animate__fadeOut'],
+					dismiss: {
+						duration: 3000,
+						onScreen: true,
+					},
+				});
+			});
 	}
 	return (
 		<div className='container'>

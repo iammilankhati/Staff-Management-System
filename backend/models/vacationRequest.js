@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const User = require('./user');
+const { User } = require('./user');
 
 const vacationRequestSchema = new mongoose.Schema({
 	author: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: User,
+		ref: 'User',
 		required: true,
 	},
 	status: {

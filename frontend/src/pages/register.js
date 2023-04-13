@@ -1,16 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { register_validate } from '../lib/validate';
 
+import { Store } from 'react-notifications-component';
+import { register } from '../services/apiServices';
+
 const Register = () => {
+	const navigate = useNavigate();
 	const formik = useFormik({
 		initialValues: {
-			username: '',
+			name: '',
 			email: '',
 			password: '',
 			cpassword: '',
-			role: 'Manager',
+			role: 'manager',
 		},
 
 		validate: register_validate,
@@ -18,7 +22,46 @@ const Register = () => {
 	});
 
 	async function onSubmit(values) {
-		console.log(values);
+		const formData = {
+			name: values.username,
+			email: values.email,
+			password: values.password,
+			role: values.role,
+		};
+		register(formData)
+			.then((res) => {
+				console.log(res);
+				Store.addNotification({
+					title: 'Success!',
+					message: res.data.message,
+					type: 'success',
+					insert: 'top',
+					container: 'top-right',
+					animationIn: ['animate__animated', 'animate__fadeIn'],
+					animationOut: ['animate__animated', 'animate__fadeOut'],
+					dismiss: {
+						duration: 3000,
+						onScreen: true,
+					},
+				});
+				navigate('/login');
+			})
+			.catch((error) => {
+				console.log(error);
+				Store.addNotification({
+					title: 'Failure!',
+					message: 'Failed to register user !',
+					type: 'danger',
+					insert: 'top',
+					container: 'top-right',
+					animationIn: ['animate__animated', 'animate__fadeIn'],
+					animationOut: ['animate__animated', 'animate__fadeOut'],
+					dismiss: {
+						duration: 3000,
+						onScreen: true,
+					},
+				});
+			});
 	}
 	return (
 		<div className='container'>
@@ -87,7 +130,7 @@ const Register = () => {
 					<div className='input-group'>
 						<select name='role' id='role' {...formik.getFieldProps('role')}>
 							<option value='manager'>Manager</option>
-							<option value='Employee'>Employee</option>
+							<option value='employee'>Employee</option>
 						</select>
 					</div>
 					<div className='button'>

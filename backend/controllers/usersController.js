@@ -1,7 +1,7 @@
 const ErrorHandler = require('../utils/errorHandler');
 const sendToken = require('../utils/jwtToken,js');
 const catchAsyncErrors = require('./../middleware/catchAsyncErrors');
-const User = require('./../models/user');
+const { User } = require('./../models/user');
 
 //Register the new user
 exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
@@ -17,6 +17,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
 	const token = user.getJwtToken();
 	res.status(201).json({
 		success: true,
+		message: 'User registered successfully !',
 		token,
 	});
 });

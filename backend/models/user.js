@@ -58,19 +58,18 @@ module.exports = User;
 const managerSchema = new mongoose.Schema({
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: User,
+		ref: 'User',
 		required: true,
 	},
 });
 
 const Manager = mongoose.model('Manager', managerSchema);
-module.exports = Manager;
 
 // Schema for Employee
 const employeeSchema = new mongoose.Schema({
 	user: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: User,
+		ref: 'User',
 		required: true,
 	},
 	remaining_vacation_days: {
@@ -80,4 +79,9 @@ const employeeSchema = new mongoose.Schema({
 });
 
 const Employee = mongoose.model('Employee', employeeSchema);
-module.exports = Employee;
+
+module.exports = {
+	User,
+	Manager,
+	Employee,
+};
