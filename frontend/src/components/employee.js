@@ -11,8 +11,6 @@ import {
 import { Store } from 'react-notifications-component';
 import { useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import store from '../redux/store';
-import { Logout } from '../redux/actions';
 
 const Employee = () => {
 	const navigate = useNavigate();
@@ -100,7 +98,6 @@ const Employee = () => {
 
 	const handleLogout = () => {
 		localStorage.clear();
-		store.dispatch(Logout());
 		navigate('/login');
 	};
 	return (
