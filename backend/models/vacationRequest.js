@@ -7,15 +7,26 @@ const vacationRequestSchema = new mongoose.Schema({
 		ref: 'User',
 		required: true,
 	},
+	author_email: {
+		type: String,
+		required: true,
+	},
 	status: {
 		type: String,
 		enum: ['approved', 'rejected', 'pending'],
 		default: 'pending',
 	},
-
+	overlapping: {
+		type: Boolean,
+		default: false,
+	},
 	resolved_by: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: User,
+	},
+	resolved_by_name: {
+		type: String,
+		default: 'Manager',
 	},
 	request_created_at: {
 		type: Date,

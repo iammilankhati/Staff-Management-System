@@ -8,6 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
+app.use(express.json('./../frontend/build'));
 //routings
 app.use('/api/v1', user);
 app.use('/api/v1', request);

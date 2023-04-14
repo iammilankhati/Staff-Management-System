@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const CronJob = require('cron').CronJob;
 
 //Schema for User
 const userSchema = new mongoose.Schema({
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema({
 	role: {
 		type: String,
 		required: true,
-		enum: ['worker', 'manager'],
+		enum: ['employee', 'manager'],
 	},
 	createdAt: {
 		type: Date,
@@ -75,10 +76,32 @@ const employeeSchema = new mongoose.Schema({
 	remaining_vacation_days: {
 		type: Number,
 		default: 30,
+		min: 0,
 	},
 });
 
 const Employee = mongoose.model('Employee', employeeSchema);
+
+// Define a function to reset the remaining_vacation_days field to 30 every year
+employeeSchema.statics.resetVacationDays = async function () {
+	const employees = await this.find();
+	const currentYear = new Date().getFullYear();
+
+	for (const employee of employees) {
+		const employeeYear = employee.createdAt.getFullYear();
+		if (employeeYear < currentYear) {
+			employee.remaining_vacation_days = 30;
+			await employee.save();
+		}
+	}
+};
+
+// Set up a cron job to run the resetVacationDays function every year on January 1st
+const job = new CronJob('0 0 1 1 *', () => {
+	Employee.resetVacationDays();
+});
+
+job.start();
 
 module.exports = {
 	User,
